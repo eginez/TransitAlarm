@@ -32,7 +32,9 @@ class PugdetSoundTransitMonitor implements TransitMonitor {
         def obs = Observable.<String>create({ Subscriber subscriber ->
             Schedulers.newThread()
                     .createWorker()
-                    .schedulePeriodically({ subscriber.onNext(displayBusInfo(routeName, stopCode, tripName)) },
+                    .schedulePeriodically({
+                        subscriber.onNext(displayBusInfo(routeName, stopCode, tripName))
+                    },
                     initalDelay, frequency, frequencyTimeUnit)
         }).publish()
         return obs

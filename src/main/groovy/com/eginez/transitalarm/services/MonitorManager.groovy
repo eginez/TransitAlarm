@@ -19,7 +19,7 @@ class MonitorManager {
                                      long duration = 15, TimeUnit unit = TimeUnit.MINUTES){
           def monitor = transitMonitor.startMonitorBusAtStop(startAt, routeName, stopCode, tripName)
           //Start monitoring right away
-          //monitor.connect()
+          monitor.connect()
           allMonitors.put(routeName+stopCode+tripName, monitor)
      }
 

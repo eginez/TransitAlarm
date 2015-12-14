@@ -5,7 +5,7 @@ import javafx.stage.Stage
 import javafx.stage.WindowEvent
 
 trait Viewable {
-    protected Stage stage
+    Stage stage
 
     public setStage(Stage st) {
         stage = st
