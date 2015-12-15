@@ -14,7 +14,5 @@ trait Viewable {
     }
     public void onHidden(WindowEvent event) { }
 
-    public void onShown(WindowEvent event) {
-        println 'on showing'
-    }
+    public void onShown(WindowEvent event) { }
 }
