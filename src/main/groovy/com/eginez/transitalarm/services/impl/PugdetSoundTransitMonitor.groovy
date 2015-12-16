@@ -1,5 +1,7 @@
 package com.eginez.transitalarm.services.impl
 
+import com.eginez.transitalarm.model.remote.ArrivalsAndDepartures
+import com.eginez.transitalarm.model.remote.Stop
 import com.eginez.transitalarm.services.TransitMonitor
 import groovy.util.logging.Slf4j
 import org.joda.time.DateTime
@@ -22,20 +24,20 @@ class PugdetSoundTransitMonitor implements TransitMonitor {
 
     public PugdetSoundTransitMonitor(){ }
 
-    public String displayBusInfo(String routeName, String stopCode, String tripName) {
+    public List<Tuple2<Stop, ArrivalsAndDepartures>> displayBusInfo(String routeName, String stopCode, String tripName) {
         return busFinder.findBusInfoAlongRoute(routeName, stopCode, tripName)
     }
 
-    public ConnectableObservable<String> startMonitorBusAtStop(DateTime startAt, String routeName, String stopCode, String tripName) {
-        long initalDelay = calculateIntialDelay(startAt)
-        log.debug("Will start in $initalDelay seconds")
+    public ConnectableObservable<List<Tuple2<Stop, ArrivalsAndDepartures>>> startMonitorBusAtStop(DateTime startAt, String routeName, String stopCode, String tripName) {
+        long initialDelay = calculateIntialDelay(startAt)
+        log.debug("Will start in $initialDelay seconds")
         def obs = Observable.<String>create({ Subscriber subscriber ->
             Schedulers.newThread()
                     .createWorker()
                     .schedulePeriodically({
                         subscriber.onNext(displayBusInfo(routeName, stopCode, tripName))
                     },
-                    initalDelay, frequency, frequencyTimeUnit)
+                    initialDelay, frequency, frequencyTimeUnit)
         }).publish()
         return obs
     }

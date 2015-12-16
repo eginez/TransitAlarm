@@ -1,16 +1,20 @@
 package com.eginez.transitalarm.config
 
+import com.eginez.transitalarm.model.remote.deserializers.Deserializable
+import com.eginez.transitalarm.model.remote.deserializers.Deserializers
 import com.eginez.transitalarm.services.MonitorManager
 import com.eginez.transitalarm.services.TransitMonitor
 import com.eginez.transitalarm.services.impl.BusFinder
 import com.eginez.transitalarm.services.remote.PudgetSoundTransitService
 import com.eginez.transitalarm.services.impl.PugdetSoundTransitMonitor
+import com.google.gson.GsonBuilder
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.Singleton
 import retrofit.Converter
 import retrofit.GsonConverterFactory
 import retrofit.Retrofit
+
 
 
 class AppInjector extends AbstractModule {
@@ -36,9 +40,29 @@ class AppInjector extends AbstractModule {
         return rt
     }
 
+
+   // @Provides @Singleton
+   // Converter.Factory providesConverterFactory2() {
+   //    return JacksonConverterFactory.create()
+   // }
+
     @Provides @Singleton
-    Converter.Factory providesConverterFactory() {
-        return GsonConverterFactory.create()
+    Converter.Factory providesConverterFactory(Deserializable[] deserializables) {
+        GsonBuilder builder = new GsonBuilder()
+        for(Deserializable d : deserializables) {
+            builder.registerTypeAdapter(d.type, d)
+        }
+        return GsonConverterFactory.create(builder.create())
+    }
+
+    @Provides @Singleton
+    Deserializable[] provideDeserializers() {
+        Deserializable[] des = [
+                new Deserializers.RouteDeserializer(),
+                new Deserializers.StopDeserializer(),
+                new Deserializers.ArrivalAndDeparturesDeserializer(),
+                new Deserializers.RouteStopInformationDeserializer()]
+        return des
     }
 
     @Provides

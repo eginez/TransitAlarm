@@ -3,7 +3,6 @@ package com.eginez.transitalarm.model.remote
 import groovy.transform.ToString
 import groovy.transform.builder.Builder
 
-@Builder
 @ToString
 class Route {
     String agencyId

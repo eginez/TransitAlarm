@@ -1,30 +1,41 @@
 package com.eginez.transitalarm.model.remote
 
 import groovy.transform.ToString
-import groovy.transform.builder.Builder
 import org.joda.time.DateTime
+import org.joda.time.LocalDateTime
+import org.joda.time.LocalDateTime
 
-import java.time.Instant
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
-@Builder
 @ToString(includeNames = true)
 class ArrivalsAndDepartures {
+    boolean arrivalEnabled
+    String blockTripSequence
+    boolean departureEnabled
+    double distanceFromStop
+    String frequency
+    LocalDateTime lastUpdateTime
+    int numberOfStopsAway
+    boolean predicted
+    String predictedArrivalInterval
+    LocalDateTime predictedArrivalTime
+    String predictedDepartureInterval
+    LocalDateTime predictedDepartureTime
     String routeId
     String routeLongName
     String routeShortName
-    long scheduledArrivalTime
-    long scheduledDepartureTime
-    String frequency
-    boolean predicted
-    long predictedArrivalTime
-    long predictedDepartureTime
-    double distanceFromStop
-    int numberOfStopsAway
-    boolean arrivalEnabled
-    boolean departureEnabled
+    String scheduledArrivalInterval
+    LocalDateTime scheduledArrivalTime
+    String scheduledDepartureInterval
+    LocalDateTime scheduledDepartureTime
+    LocalDateTime serviceDate
+    List<String> situationIds
+    String status
+    String stopId
     int stopSequence
+    String tripHeadsign
+    String tripId
+    TripStatus tripStatus
+    String vehicleId
 
     def propertyMissing(String property, def value) {
         //no-op
@@ -37,8 +48,8 @@ class ArrivalsAndDepartures {
                 "numberOfStopsAway: ${numberOfStopsAway}"
     }
 
-    def String formatDate(long date) {
-        return new DateTime(date).toString('HH:mm')
+    def String formatDate(LocalDateTime date) {
+        return date.toString('HH:mm')
     }
 
 }

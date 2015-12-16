@@ -47,7 +47,7 @@ class Main extends Application {
         def routeName = '26'
         def  stopCode = '6240'
         def tripName = 'EAST GREEN LAKE FREMONT'
-        DateTime startTime = DateTime.now().plusSeconds(10)
+        DateTime startTime = DateTime.now()//.plusSeconds(10)
         manager.createMonitor(routeName, stopCode, tripName, startTime)
     }
 

@@ -1,5 +1,8 @@
 package com.eginez.transitalarm.services.remote
 
+import com.eginez.transitalarm.model.remote.ArrivalsAndDepartures
+import com.eginez.transitalarm.model.remote.Route
+import com.eginez.transitalarm.model.remote.RouteStopInformation
 import retrofit.Call
 import retrofit.http.Field
 import retrofit.http.GET
@@ -17,12 +20,12 @@ interface PudgetSoundTransitService {
     Call<Map> getAgency(@Path('id') String id)
 
     @GET("api/where/routes-for-agency/{id}.json?key=TEST")
-    Call<Map> routesForAgency(@Path('id') String id)
+    Call<Collection<Route>> routesForAgency(@Path('id') String id)
 
     @GET("api/where/stops-for-route/{routeId}.json?key=TEST&version=2&includePolylines=false")
-    Call<Map> stopForRoute(@Path('routeId') String routeId)
+    Call<RouteStopInformation> stopForRoute(@Path('routeId') String routeId)
 
     @GET("api/where/arrivals-and-departures-for-stop/{stopId}.json?key=TEST")
-    Call<Map> arrivalsForStop(@Path('stopId') String stopId)
+    Call<Collection<ArrivalsAndDepartures>> arrivalsForStop(@Path('stopId') String stopId)
 
 }
