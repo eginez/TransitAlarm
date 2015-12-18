@@ -26,8 +26,8 @@
                <children>
                   <Label layoutX="85.0" layoutY="148.0" text="Stop Code:" GridPane.rowIndex="1" />
                   <Label layoutX="95.0" layoutY="206.0" text="Direction:" GridPane.rowIndex="2" />
-                  <TextField fx:id="stopCode" layoutX="248.0" layoutY="89.0" GridPane.columnIndex="1" />
-                  <TextField fx:id="routeName" layoutX="248.0" layoutY="142.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="routeName" layoutX="248.0" layoutY="89.0" GridPane.columnIndex="1" />
+                  <TextField fx:id="stopCode" layoutX="248.0" layoutY="142.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label layoutX="95.0" layoutY="89.0" text="Route Number:" />
                   <TextField fx:id="direction" layoutX="248.0" layoutY="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <Label text="Start at:" GridPane.rowIndex="3" />

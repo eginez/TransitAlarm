@@ -2,6 +2,7 @@ package com.eginez.transitalarm
 
 import com.eginez.transitalarm.config.AppInjector
 import com.eginez.transitalarm.services.MonitorManager
+import com.eginez.transitalarm.services.NotificationsManager
 import com.eginez.transitalarm.ui.StageManager
 import com.google.inject.Guice
 import com.google.inject.Injector
@@ -9,7 +10,7 @@ import javafx.application.Platform
 import javafx.stage.Stage
 import org.apache.log4j.BasicConfigurator
 import javafx.application.Application
-import org.joda.time.DateTime
+import org.joda.time.LocalDateTime
 
 import javax.imageio.ImageIO
 import java.awt.MenuItem
@@ -39,6 +40,7 @@ class Main extends Application {
         }
         Platform.setImplicitExit(false)
         SystemTray.systemTray.add(createTrayIcon(controller))
+        injector.getInstance(NotificationsManager)
         startMonitoring(injector)
     }
 
@@ -47,8 +49,7 @@ class Main extends Application {
         def routeName = '26'
         def  stopCode = '6240'
         def tripName = 'EAST GREEN LAKE FREMONT'
-        DateTime startTime = DateTime.now()//.plusSeconds(10)
-        manager.createMonitor(routeName, stopCode, tripName, startTime)
+        manager.createMonitor(routeName, stopCode, tripName, LocalDateTime.now())
     }
 
     private StageManager initStages(Injector injector) {
