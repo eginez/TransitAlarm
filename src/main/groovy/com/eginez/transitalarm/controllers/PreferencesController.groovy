@@ -7,6 +7,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.ProgressIndicator
 import javafx.scene.control.TextField
+import javafx.stage.WindowEvent
 import org.joda.time.LocalDateTime
 import org.joda.time.format.DateTimeFormat
 
@@ -24,11 +25,24 @@ class PreferencesController implements Viewable {
 
     private int duration = 30 //mins
 
+    @Override
+    void onShown(WindowEvent event) {
+        if(monitorManager.monitorPreferences.isEmpty()) {
+            return
+        }
+        def preference = monitorManager.monitorPreferences.first()
+        routeName.text = preference.routeNumber
+        stopCode.text = preference.stopCode
+        direction.text = preference.direction
+        hour.text = preference.startAt.toString('HH:mm')
+    }
+
     public void onDone(ActionEvent actionEvent) {
 
         String today = DateTimeFormat.forPattern('YYYY/MM/dd').print(LocalDateTime.now())
-        LocalDateTime startTime = LocalDateTime.parse("$today ${hour.text} ${ampm.value.toUpperCase()}",
-                DateTimeFormat.forPattern('YYYY/MM/dd h:mm aa'))
+        LocalDateTime startTime = LocalDateTime.parse("$today ${hour.text}",
+                DateTimeFormat.forPattern('YYYY/MM/dd HH:mm'))
         monitorManager.saveOrUpdatePreferences(routeName.text, stopCode.text, direction.text, startTime, duration)
+        stage.close()
     }
 }

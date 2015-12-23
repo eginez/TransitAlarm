@@ -32,16 +32,11 @@ class Main extends Application {
         StageManager controller = initStages(injector)
         primaryStage = controller.primaryStage
         primaryStage.title = "TransitAlarm"
-
-        //Do it only on debug mode
-        primaryStage.setOnCloseRequest {
-            //Platform.exit()
-            //System.exit(0)
-        }
         Platform.setImplicitExit(false)
-        SystemTray.systemTray.add(createTrayIcon(controller))
         injector.getInstance(NotificationsManager)
-        startMonitoring(injector)
+        def monitorManager = injector.getInstance(MonitorManager)
+        monitorManager.loadFromPersistence()
+        SystemTray.systemTray.add(createTrayIcon(controller, { monitorManager.saveToPersistence() }))
     }
 
     void startMonitoring(Injector injector) {
@@ -58,12 +53,12 @@ class Main extends Application {
         return controller
     }
 
-    private TrayIcon createTrayIcon(StageManager controller){
+    private TrayIcon createTrayIcon(StageManager controller, Closure onExit){
         def icon = ImageIO.read(new File('./src/main/resources/tray_icon.png'))
-        return new TrayIcon(icon, "TransitAlarm", createPopupMenu(controller))
+        return new TrayIcon(icon, "TransitAlarm", createPopupMenu(controller, onExit))
     }
 
-    private PopupMenu createPopupMenu(StageManager controller) {
+    private PopupMenu createPopupMenu(StageManager controller, Closure onExit) {
         def popUp = new PopupMenu()
         def menuShow = new MenuItem('Show')
         def menuPreferences = new MenuItem('Preferences')
@@ -80,6 +75,7 @@ class Main extends Application {
             }
         }
         menuExit.addActionListener {
+            onExit.call()
             Platform.exit()
             System.exit(0)
         }

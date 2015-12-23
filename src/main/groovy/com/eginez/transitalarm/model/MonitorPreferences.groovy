@@ -8,4 +8,13 @@ class MonitorPreferences implements Serializable {
     String direction
     int duration
     LocalDateTime startAt
+
+
+    public Map asWritableMap() {
+        def map = properties
+        map['startAt'] = startAt.millisOfDay
+        ['class', 'metaClass'].each {map.remove it}
+        return map
+    }
+
 }
