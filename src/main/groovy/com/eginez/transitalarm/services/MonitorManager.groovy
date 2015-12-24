@@ -14,17 +14,18 @@ import rx.subjects.PublishSubject
 import rx.subjects.SerializedSubject
 
 import javax.inject.Inject
+import javax.inject.Named
 import java.util.concurrent.TimeUnit
 
 @CompileStatic
 @Singleton
 @Slf4j
 class MonitorManager {
-    private static final String PREFRENCES_FILE = "${System.getProperty('user.home')}/.transitAlarm.config"
+    @Inject @Named('preferenceFile') private String preferenceFile
     @Inject TransitMonitor transitMonitor
     private Map<String, ConnectableObservable> allMonitors = [:]
     private SerializedSubject<Object,ConnectableObservable> monitorStream = new SerializedSubject<>(PublishSubject.<ConnectableObservable>create())
-    List<MonitorPreferences> monitorPreferences = []
+    Map<String,MonitorPreferences> monitorPreferences = [:]
 
 
     private Observable createMonitor(String routeName, String stopCode, String tripName, LocalDateTime startAt = LocalDateTime.now(),
@@ -43,8 +44,7 @@ class MonitorManager {
     public Observable<ConnectableObservable> getMonitorStream() {
         return monitorStream
     }
-    private Observable updateTransitMonitor(String routeName, String stopCode, String tripName, LocalDateTime startAt = LocalDateTime.now(),
-                                    int duration = 15, TimeUnit unit = TimeUnit.MINUTES){
+    private Observable updateTransitMonitor(String routeName, String stopCode, String tripName, LocalDateTime startAt, int duration){
         def monitor = transitMonitor.updateMonitorBusAtStop(startAt, routeName, stopCode, tripName, duration)
         monitor.connect()
         monitorStream.onNext(monitor)
@@ -56,15 +56,16 @@ class MonitorManager {
     }
 
 
-    void saveOrUpdatePreferences(String routeNumber, String stopCode, String direction, LocalDateTime startAt, int durationInMins) {
+    void saveOrUpdatePreferences(String routeNumber, String stopCode, String direction, LocalDateTime startAt, int durationInMins = 15) {
+        String key =  routeNumber+stopCode+direction.toLowerCase()
+        key = key.replace(' ', '')
         def preferences = new MonitorPreferences( routeNumber: routeNumber, stopCode: stopCode, direction: direction,
                 startAt: startAt, duration: durationInMins)
-        monitorPreferences << preferences
+        monitorPreferences.put(key, preferences)
         updateMonitor(routeNumber, stopCode, direction, startAt, durationInMins)
     }
 
-    public Observable updateMonitor(String routeName, String stopCode, String tripName, LocalDateTime startAt = LocalDateTime.now(),
-                                    int duration = 15){
+    public Observable updateMonitor(String routeName, String stopCode, String tripName, LocalDateTime startAt, int duration){
         ConnectableObservable obs = getMonitor(routeName, stopCode, tripName)
         if(obs == null) {
             return createMonitor(routeName, stopCode, tripName, startAt, duration)
@@ -75,13 +76,13 @@ class MonitorManager {
 
     def loadFromPersistence() {
         try {
-            def file = new File(PREFRENCES_FILE)
+            def file = new File(preferenceFile)
             log.debug("Loading preferences from ${file.absolutePath}")
-            def preferences = new JsonSlurper().parse(file) as List<Map>
-            monitorPreferences = preferences.collect { new MonitorPreferences( routeNumber: it.routeNumber as String,
+            def preferences = new JsonSlurper().parse(file) as Map<String, Map>
+            monitorPreferences = preferences.collectEntries { k,it -> [k, new MonitorPreferences( routeNumber: it.routeNumber as String,
                     stopCode: it.stopCode as String, direction: it.direction as String, duration: it.duration as int,
-                    startAt: new LocalDateTime().withMillisOfDay(it.startAt as int))}
-            monitorPreferences.each { createMonitor(it) }
+                    startAt: new LocalDateTime().withMillisOfDay(it.startAt as int))]} as Map<String, MonitorPreferences>
+            monitorPreferences.each { createMonitor(it.value) }
         }catch(JsonException|IOException ex) {
             log.warn("Can't read from preferences", ex)
         }
@@ -89,8 +90,8 @@ class MonitorManager {
 
     def saveToPersistence() {
         try {
-            List<Map> settings = monitorPreferences.collect{it.asWritableMap()}
-            def file = new File(PREFRENCES_FILE)
+            Map<String, Map> settings = monitorPreferences.collectEntries {k, v -> [k, v.asWritableMap()]} as Map<String, Map>
+            def file = new File(preferenceFile)
             file.text = JsonOutput.toJson(settings)
             log.debug("Saving preferences to ${file.absolutePath}")
         }catch(IOException ex) {

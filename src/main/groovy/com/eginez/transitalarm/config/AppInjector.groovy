@@ -30,6 +30,7 @@ class AppInjector extends AbstractModule {
         bind(TransitMonitor).to(PugdetSoundTransitMonitor)
         bind(MonitorManager)
         bind(Integer).annotatedWith(Names.named('notificationFrequency')).toInstance(NOTIFICATION_FREQUENCY)
+        bind(String).annotatedWith(Names.named('preferenceFile')).toInstance("${System.getProperty('user.home')}/.transitAlarm.config".toString())
         bind(Notifier).to(MacOSXNotifier)
         bind(NotificationsManager)
     }

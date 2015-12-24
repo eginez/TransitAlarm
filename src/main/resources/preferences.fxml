@@ -41,14 +41,6 @@
                      </rowConstraints>
                      <children>
                         <TextField fx:id="hour" />
-                        <ChoiceBox fx:id="ampm" prefWidth="150.0" GridPane.columnIndex="1" value="AM">
-                        <items>
-                           <FXCollections fx:factory="observableArrayList">
-                              <String fx:value="AM" />
-                              <String fx:value="PM" />
-                           </FXCollections>
-                        </items>
-                        </ChoiceBox>
                      </children>
                   </GridPane>
                </children>

@@ -13,24 +13,22 @@ import org.joda.time.format.DateTimeFormat
 
 import javax.inject.Inject
 
+
 class PreferencesController implements Viewable {
     @Inject MonitorManager monitorManager
-
     @FXML private  ProgressIndicator progressIndicator
     @FXML private  TextField routeName
     @FXML private  TextField stopCode
     @FXML private  TextField direction
     @FXML private TextField hour
-    @FXML private ChoiceBox<String> ampm
 
-    private int duration = 30 //mins
 
     @Override
     void onShown(WindowEvent event) {
         if(monitorManager.monitorPreferences.isEmpty()) {
             return
         }
-        def preference = monitorManager.monitorPreferences.first()
+        def preference = monitorManager.monitorPreferences.find { it.key != null}.value
         routeName.text = preference.routeNumber
         stopCode.text = preference.stopCode
         direction.text = preference.direction
