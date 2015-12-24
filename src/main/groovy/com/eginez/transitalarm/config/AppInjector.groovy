@@ -77,8 +77,9 @@ class AppInjector extends AbstractModule {
     @Provides
     ViewConfig[] providesViewConfigurations() {
         def allViews = []
-        allViews << new ViewConfig(name: 'primary', height: 200, width: 200, url: new File('./src/main/resources/main.fxml').toURL())
-        allViews << new ViewConfig(name: 'preferences', height: 200, width: 400, url: new File('./src/main/resources/preferences.fxml').toURL())
+        def loader = this.class.classLoader
+        allViews << new ViewConfig(name: 'primary', height: 200, width: 200, url: loader.getResource('main.fxml'))
+        allViews << new ViewConfig(name: 'preferences', height: 200, width: 400, url: loader.getResource('preferences.fxml'))
         return allViews.toArray() as ViewConfig[]
     }
 }
