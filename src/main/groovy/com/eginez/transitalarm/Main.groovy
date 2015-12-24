@@ -54,7 +54,7 @@ class Main extends Application {
     }
 
     private TrayIcon createTrayIcon(StageManager controller, Closure onExit){
-        def icon = ImageIO.read(new File('./src/main/resources/tray_icon.png'))
+        def icon = ImageIO.read(this.class.classLoader.getResource('tray_icon.png'))
         return new TrayIcon(icon, "TransitAlarm", createPopupMenu(controller, onExit))
     }
 
