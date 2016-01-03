@@ -1,4 +1,4 @@
-# TransitAlarm
+# TransitAlarm(alpha quality, a number of bugs present)
 A real simple application that raises a notification when a bus is coming to a given stop, it also gives the times at the previous stops, in the past this has helped evaluate wether the bus will actually make it on time to the stop
 
 
@@ -18,3 +18,6 @@ A real simple application that raises a notification when a bus is coming to a g
 ![Alt text](/sc1.jpg "")
 - See the times of the bus across all previous stops
 ![Alt text](/sc2.jpg "")
+
+## TODO
+- Fix bugs
