@@ -12,6 +12,8 @@ A real simple application that raises a notification when a bus is coming to a g
 
 
 ## Screenshots
+-After starting it add an icon to your tool bar
+![Alt text](/sc3.jpg "")
 - Add your stop id, route name, and time to monitor
 ![Alt text](/sc1.jpg "")
 - See the times of the bus across all previous stops
